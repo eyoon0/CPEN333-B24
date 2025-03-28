@@ -1,5 +1,5 @@
-# Group#:
-# Student Names:
+# Group#: B24
+# Student Names: Jesse Tam, Eric Yoon
 
 """
     This program implements a variety of the snake 

@@ -36,7 +36,7 @@ class Gui():
         self.snakeIcon = self.canvas.create_line(
             (0, 0), (0, 0), fill=ICON_COLOUR, width=SNAKE_ICON_WIDTH)
         self.preyIcon = self.canvas.create_rectangle(
-            0, 0, 0, 0, fill=ICON_COLOUR, outline=ICON_COLOUR)
+            0, 0, 0, 0, fill=ICON_COLOUR, outline=ICON_COLOUR, width=PREY_ICON_WIDTH)
         #display starting score of 0
         self.score = self.canvas.create_text(
             scoreTextXLocation, scoreTextYLocation, fill=textColour, 
@@ -126,8 +126,12 @@ class Game():
         """
         SPEED = 0.15     #speed of snake updates (sec)
         while self.gameNotOver:
-            #complete the method implementation below
-            pass #remove this line from your implementation
+
+            self.move() # this handles the logic of it, so the code knows the coordinates of the snake
+
+            self.queue.put({"move": self.snakeCoordinates}) # this puts the "move" action into the queue to be updated by the GUI
+
+            time.sleep(SPEED)
 
     def whenAnArrowKeyIsPressed(self, e) -> None:
         """ 
@@ -173,7 +177,21 @@ class Game():
             It is used by the move() method.    
         """
         lastX, lastY = self.snakeCoordinates[-1]
-        #complete the method implementation below
+
+        if self.direction == "Left":
+            newHead = (lastX - SNAKE_ICON_WIDTH, lastY)
+        
+        elif self.direction == "Right":
+            newHead = (lastX + SNAKE_ICON_WIDTH, lastY)
+
+        elif self.direction == "Up":
+            newHead = (lastX, lastY + SNAKE_ICON_WIDTH)
+        
+        else:
+            newHead = (lastX, lastY - SNAKE_ICON_WIDTH)
+
+        return newHead
+       
 
 
     def isGameOver(self, snakeCoordinates) -> None:
@@ -207,6 +225,7 @@ if __name__ == "__main__":
     WINDOW_WIDTH = 500           
     WINDOW_HEIGHT = 300 
     SNAKE_ICON_WIDTH = 15
+    PREY_ICON_WIDTH = 5
     #add the specified constant PREY_ICON_WIDTH here     
 
     BACKGROUND_COLOUR = "green"   #you may change this colour if you wish

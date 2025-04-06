@@ -203,7 +203,14 @@ class Game():
             field and also adds a "game_over" task to the queue. 
         """
         x, y = snakeCoordinates
-        #complete the method implementation below
+        
+        if x < 0 or x > WINDOW_WIDTH or y < 0 or y > WINDOW_HEIGHT: # checks if the snake has passed any walls
+            self.gameNotOver = False
+            self.queue.put({"game_over": True})
+        
+        for i in snakeCoordinates:
+            if x,y == i
+
 
     def createNewPrey(self) -> None:
         """ 
@@ -218,12 +225,12 @@ class Game():
         """
         THRESHOLD = 15   #sets how close prey can be to borders
         
-        x = random.randint(THRESHOLD, WINDOW_WIDTH - THRESHOLD)
+        x = random.randint(THRESHOLD, WINDOW_WIDTH - THRESHOLD) # randomly creates x and y values that are THRESHOLD away from the walls
         y = random.randint(THRESHOLD, WINDOW_HEIGHT - THRESHOLD)
 
-        newCoords = (x - PREY_ICON_WIDTH, y - PREY_ICON_WIDTH, x + PREY_ICON_WIDTH, y + PREY_ICON_WIDTH)
+        preyCoords = (x - PREY_ICON_WIDTH, y - PREY_ICON_WIDTH, x + PREY_ICON_WIDTH, y + PREY_ICON_WIDTH) # creates the prey coordinates
 
-        self.queue.put({"prey": newCoords})
+        self.queue.put({"prey": preyCoords}) # adds the prey task to the queue
 
 if __name__ == "__main__":
     #some constants for our GUI

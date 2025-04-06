@@ -217,8 +217,13 @@ class Game():
             away from the walls. 
         """
         THRESHOLD = 15   #sets how close prey can be to borders
-        #complete the method implementation below
+        
+        x = random.randint(THRESHOLD, WINDOW_WIDTH - THRESHOLD)
+        y = random.randint(THRESHOLD, WINDOW_HEIGHT - THRESHOLD)
 
+        newCoords = (x - PREY_ICON_WIDTH, y - PREY_ICON_WIDTH, x + PREY_ICON_WIDTH, y + PREY_ICON_WIDTH)
+
+        self.queue.put({"prey": newCoords})
 
 if __name__ == "__main__":
     #some constants for our GUI

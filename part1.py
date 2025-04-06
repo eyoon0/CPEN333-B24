@@ -208,7 +208,7 @@ class Game():
             self.gameNotOver = False
             self.queue.put({"game_over": True})
         
-        if snakeCoordinates[-1] in snakeCoordinates[:-1]: # checks if the snake bit itself
+        if snakeCoordinates in self.snakeCoordinates[:-1]: # checks if the snake bit itself
             self.gameNotOver = False
             self.queue.put({"game_over": True})
 

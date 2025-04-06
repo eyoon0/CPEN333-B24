@@ -124,7 +124,7 @@ class Game():
             Use the SPEED constant to set how often the move tasks
             are generated.
         """
-        SPEED = 0.05    #speed of snake updates (sec)
+        SPEED = 0.15   #speed of snake updates (sec)
         while self.gameNotOver:
 
             self.move() # this handles the logic of it, so the code knows the coordinates of the snake

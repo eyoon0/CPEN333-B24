@@ -5,7 +5,7 @@ import threading
 import queue
 import time, random
 
-RANDOM_TIME = (1,5)
+#RANDOM_TIME = (1,5)
 
 def consumerWorker (queue):
     """target worker for a consumer thread"""
@@ -16,7 +16,7 @@ def consumerWorker (queue):
             break
 
         print(f"Consumer {threading.current_thread().name} consumed {item}.")
-        time.sleep(random.randint(RANDOM_TIME))
+        time.sleep(random.randint(1,5))
         queue.task_done()
   
 def producerWorker(queue):
@@ -26,7 +26,7 @@ def producerWorker(queue):
         item = random.randint(1,100)
         print(f"Producer {threading.current_thread().name} produced {item}.")
         queue.put(item)
-        time.sleep(random.randint(RANDOM_TIME))
+        time.sleep(random.randint(1,5))
 
     queue.put(None)
 

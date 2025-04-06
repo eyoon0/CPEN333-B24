@@ -34,9 +34,9 @@ class Gui():
         self.canvas.pack()
         #create starting game icons for snake and the prey
         self.snakeIcon = self.canvas.create_line(
-            (0, 0), (0, 0), fill=ICON_COLOUR, width=SNAKE_ICON_WIDTH)
+            (0, 0), (0, 0), fill=SNAKE_COLOUR, width=SNAKE_ICON_WIDTH)
         self.preyIcon = self.canvas.create_rectangle(
-            0, 0, 0, 0, fill=ICON_COLOUR, outline=ICON_COLOUR, width=PREY_ICON_WIDTH)
+            0, 0, 0, 0, fill=PREY_COLOUR, outline=PREY_COLOUR, width=PREY_ICON_WIDTH)
         #display starting score of 0
         self.score = self.canvas.create_text(
             scoreTextXLocation, scoreTextYLocation, fill=textColour, 
@@ -124,7 +124,7 @@ class Game():
             Use the SPEED constant to set how often the move tasks
             are generated.
         """
-        SPEED = 0.15     #speed of snake updates (sec)
+        SPEED = 0.05    #speed of snake updates (sec)
         while self.gameNotOver:
 
             self.move() # this handles the logic of it, so the code knows the coordinates of the snake
@@ -163,10 +163,32 @@ class Game():
             The snake coordinates list (representing its length 
             and position) should be correctly updated.
         """
+        # computing new coordinate and appending
         NewSnakeCoordinates = self.calculateNewCoordinates()
-        #complete the method implementation below
+        self.snakeCoordinates.append(NewSnakeCoordinates)
+        
+        # finding where the prey is
+        x1, y1, x2, y2 = self.preyCoords # defining the bottom left and top right of prey square
 
+        preyX = (x1+x2) / 2 # finding the middle point (x,y) of the prey
+        preyY = (y1+y2) / 2
 
+        preyMiddle = preyX, preyY
+
+        distance = ((NewSnakeCoordinates[0] - preyX)**2 + (NewSnakeCoordinates[1] - preyY)**2)**(1/2) # distance from head to prey
+
+        distanceThreshold = 10
+        # if the snake ate the prey
+        if distance <= distanceThreshold:
+            self.score += 1
+            self.queue.put({"score": self.score})
+            self.createNewPrey()
+
+        else: 
+            self.snakeCoordinates.pop(0)
+
+        self.isGameOver(NewSnakeCoordinates)
+       
     def calculateNewCoordinates(self) -> tuple:
         """
             This method calculates and returns the new 
@@ -178,17 +200,17 @@ class Game():
         """
         lastX, lastY = self.snakeCoordinates[-1]
 
-        if self.direction == "Left":
+        if self.direction == "Left": 
             newHead = (lastX - SNAKE_ICON_WIDTH, lastY)
         
         elif self.direction == "Right":
             newHead = (lastX + SNAKE_ICON_WIDTH, lastY)
 
         elif self.direction == "Up":
-            newHead = (lastX, lastY + SNAKE_ICON_WIDTH)
+            newHead = (lastX, lastY - SNAKE_ICON_WIDTH)
         
         else:
-            newHead = (lastX, lastY - SNAKE_ICON_WIDTH)
+            newHead = (lastX, lastY + SNAKE_ICON_WIDTH)
 
         return newHead
        
@@ -229,21 +251,21 @@ class Game():
         x = random.randint(THRESHOLD, WINDOW_WIDTH - THRESHOLD) # randomly creates x and y values that are THRESHOLD away from the walls
         y = random.randint(THRESHOLD, WINDOW_HEIGHT - THRESHOLD)
 
-        preyCoords = (x - PREY_ICON_WIDTH, y - PREY_ICON_WIDTH, x + PREY_ICON_WIDTH, y + PREY_ICON_WIDTH) # creates the prey coordinates
+        self.preyCoords = (x - PREY_ICON_WIDTH, y - PREY_ICON_WIDTH, x + PREY_ICON_WIDTH, y + PREY_ICON_WIDTH) # creates the prey coordinates
 
-        self.queue.put({"prey": preyCoords}) # adds the prey task to the queue
+        self.queue.put({"prey": self.preyCoords}) # adds the prey task to the queue
 
 if __name__ == "__main__":
     #some constants for our GUI
     WINDOW_WIDTH = 500           
     WINDOW_HEIGHT = 300 
     SNAKE_ICON_WIDTH = 15
-    PREY_ICON_WIDTH = 5
+    PREY_ICON_WIDTH = 4
     #add the specified constant PREY_ICON_WIDTH here     
 
-    BACKGROUND_COLOUR = "green"   #you may change this colour if you wish
-    ICON_COLOUR = "yellow"        #you may change this colour if you wish
-
+    BACKGROUND_COLOUR = "black"   #you may change this colour if you wish
+    SNAKE_COLOUR = "yellow"        #you may change this colour if you wish
+    PREY_COLOUR = "red"
     gameQueue = queue.Queue()     #instantiate a queue object using python's queue class
 
     game = Game()        #instantiate the game object

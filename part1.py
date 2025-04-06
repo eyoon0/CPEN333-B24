@@ -208,8 +208,9 @@ class Game():
             self.gameNotOver = False
             self.queue.put({"game_over": True})
         
-        for i in snakeCoordinates:
-            if x,y == i
+        if snakeCoordinates[-1] in snakeCoordinates[:-1]: # checks if the snake bit itself
+            self.gameNotOver = False
+            self.queue.put({"game_over": True})
 
 
     def createNewPrey(self) -> None:

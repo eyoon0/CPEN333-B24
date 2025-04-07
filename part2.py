@@ -5,8 +5,6 @@ import threading
 import queue
 import time, random
 
-#RANDOM_TIME = (1,5)
-
 def consumerWorker (queue):
     """target worker for a consumer thread"""
     while True:

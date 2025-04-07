@@ -43,8 +43,8 @@ if __name__ == "__main__":
         consumer_threads.append(t)
 
     producer_threads = []
-    for producer_id in range(PRODUCERS): # Create and start producer threads
-        t = threading.Thread(target=producerWorker, args=(buffer,), name=f"Producer-{producer_id}")
+    for i in range(PRODUCERS): # Create and start producer threads
+        t = threading.Thread(target=producerWorker, args=(buffer,), name=f"Producer-{i}")
         t.start()
         producer_threads.append(t)
 

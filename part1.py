@@ -12,12 +12,12 @@ import queue        #the thread-safe queue from Python standard library
 from tkinter import Tk, Canvas, Button
 import random, time
 
-class Gui():
+class Gui(): 
     """
         This class takes care of the game's graphic user interface (gui)
         creation and termination.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """        
             The initializer instantiates the main window and 
             creates the starting icons for the snake and the prey,
@@ -45,7 +45,7 @@ class Gui():
         for key in ("Left", "Right", "Up", "Down"):
             self.root.bind(f"<Key-{key}>", game.whenAnArrowKeyIsPressed)
 
-    def gameOver(self):
+    def gameOver(self) -> None:
         """
             This method is used at the end to display a
             game over button.
@@ -65,7 +65,7 @@ class QueueHandler():
         self.gui = gui
         self.queueHandler()
     
-    def queueHandler(self):
+    def queueHandler(self) -> None:
         '''
             This method handles the queue by constantly retrieving
             tasks from it and accordingly taking the corresponding
@@ -124,14 +124,14 @@ class Game():
             Use the SPEED constant to set how often the move tasks
             are generated.
         """
-        SPEED = 0.15   #speed of snake updates (sec)
+        SPEED: float = 0.15   #speed of snake updates (sec)
         while self.gameNotOver:
 
             self.move() # this handles the logic of it, so the code knows the coordinates of the snake
 
             self.queue.put({"move": self.snakeCoordinates}) # this puts the "move" action into the queue to be updated by the GUI
 
-            time.sleep(SPEED)
+            time.sleep(SPEED) # waits for SPEED seconds
 
     def whenAnArrowKeyIsPressed(self, e) -> None:
         """ 
@@ -168,25 +168,33 @@ class Game():
         self.snakeCoordinates.append(NewSnakeCoordinates)
         
         # finding where the prey is
+        x1: int
+        y1: int
+        x2: int
+        y2: int
+
         x1, y1, x2, y2 = self.preyCoords # defining the bottom left and top right of prey square
 
-        preyX = (x1+x2) / 2 # finding the middle point (x,y) of the prey
-        preyY = (y1+y2) / 2
+        preyX: float = (x1+x2) / 2 # finding the middle point (x,y) of the prey
+        preyY: float = (y1+y2) / 2
 
-        preyMiddle = preyX, preyY
+        preyMiddle: tuple = preyX, preyY
 
-        distance = ((NewSnakeCoordinates[0] - preyX)**2 + (NewSnakeCoordinates[1] - preyY)**2)**(1/2) # distance from head to prey
+        distance: float = ((NewSnakeCoordinates[0] - preyX)**2 + (NewSnakeCoordinates[1] - preyY)**2)**(1/2) # distance from head to prey according to pythagoreas theorem
 
-        distanceThreshold = 10
-        # if the snake ate the prey
+        # arbituary distance threshold obtained from testing
+        distanceThreshold: int = 10
+
+        # if the actual distance from the head of the snake is less than the threshold value, then the snake ate the prey and it increments score by 1
         if distance <= distanceThreshold:
             self.score += 1
             self.queue.put({"score": self.score})
             self.createNewPrey()
 
+        # if it has not eaten a prey, then it removes the tail it added in the beginning
         else: 
             self.snakeCoordinates.pop(0)
-
+        # every iteration checks if the snake ate itself or hit the wall
         self.isGameOver(NewSnakeCoordinates)
        
     def calculateNewCoordinates(self) -> tuple:
@@ -200,17 +208,19 @@ class Game():
         """
         lastX, lastY = self.snakeCoordinates[-1]
 
+        newHead: tuple
+
         if self.direction == "Left": 
-            newHead = (lastX - SNAKE_ICON_WIDTH, lastY)
+            newHead = (lastX - SNAKE_ICON_WIDTH, lastY) # if the user inputs left, the coordinates would be the previous X coordinate - the width of the snake icon as it is moving in neg X
         
         elif self.direction == "Right":
-            newHead = (lastX + SNAKE_ICON_WIDTH, lastY)
-
-        elif self.direction == "Up":
-            newHead = (lastX, lastY - SNAKE_ICON_WIDTH)
+            newHead = (lastX + SNAKE_ICON_WIDTH, lastY) # if the user inputs right, the coordinates would be the previous X coordinate + the width of the snake icon as it is moving in pos X
         
+        # the origin for the game board is set to top-left, so up is neg Y and down is pos Y (read documentation file)
+        elif self.direction == "Up":
+            newHead = (lastX, lastY - SNAKE_ICON_WIDTH) # if the user inputs up, the coordinates would be the previous Y coordinate - the width of the snake icon as it is moving in neg Y
         else:
-            newHead = (lastX, lastY + SNAKE_ICON_WIDTH)
+            newHead = (lastX, lastY + SNAKE_ICON_WIDTH) # if the user inputs down, the coordinates would be the previous Y coordinate + the width of the snake icon as it is moving in pos Y
 
         return newHead
        
@@ -224,6 +234,9 @@ class Game():
             If that is the case, it updates the gameNotOver 
             field and also adds a "game_over" task to the queue. 
         """
+        x: int
+        y: int
+
         x, y = snakeCoordinates
         
         if x < 0 or x > WINDOW_WIDTH or y < 0 or y > WINDOW_HEIGHT: # checks if the snake has passed any walls
@@ -246,8 +259,11 @@ class Game():
             To make playing the game easier, set the x and y to be THRESHOLD
             away from the walls. 
         """
-        THRESHOLD = 15   #sets how close prey can be to borders
+        THRESHOLD: int = 15 #sets how close prey can be to borders
         
+        x: int
+        y: int
+
         x = random.randint(THRESHOLD, WINDOW_WIDTH - THRESHOLD) # randomly creates x and y values that are THRESHOLD away from the walls
         y = random.randint(THRESHOLD, WINDOW_HEIGHT - THRESHOLD)
 
